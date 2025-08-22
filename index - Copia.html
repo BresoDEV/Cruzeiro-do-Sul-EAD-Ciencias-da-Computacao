@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Acervo de PDFs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0f0f0f; }
+    .pdf-link:hover { color: #38bdf8; }
+    .rotate-90 { transform: rotate(90deg); }
+  </style>
+</head>
+<body class="text-white min-h-screen flex flex-col items-center p-6">
+
+  <h1 class="text-3xl font-bold mb-6">📚 Acervo de PDFs</h1>
+
+  <div id="acervo" class="w-full max-w-3xl space-y-4"></div>
+
+  <div id="viewer-container" class="w-full max-w-4xl mt-8 hidden">
+    <h2 class="text-xl font-semibold mb-2">Visualizando:</h2>
+    <iframe id="pdf-viewer" class="w-full h-[600px] border rounded-xl" style="background:#1a1a1a;"></iframe>
+  </div>
+
+  <script>
+    // --- Dados do acervo ---
+    const acervo = [
+      {
+        categoria: "Aplicações Para Internet",
+        livros: [
+          { titulo: "Conceitos Básicos do HTML", arquivo: "Semestre 1/Aplicações Para Internet/Unidade 1 - Conceitos Básicos do HTML.pdf" },
+           
+        ]
+      },
+      {
+        categoria: "Matemática",
+        livros: [
+          { titulo: "Álgebra Linear", arquivo: "algebra.pdf" },
+          { titulo: "Matrizes Avançadas", arquivo: "matriz.pdf" }
+        ]
+      }
+    ];
+
+    const container = document.getElementById("acervo");
+    const viewer = document.getElementById("pdf-viewer");
+    const viewerContainer = document.getElementById("viewer-container");
+
+    acervo.forEach((secao, index) => {
+      const bloco = document.createElement("div");
+      bloco.className = "bg-zinc-900 rounded-xl shadow-lg";
+
+      // Cabeçalho da categoria (click para expandir)
+      const header = document.createElement("button");
+      header.className = 
+        "w-full flex justify-between items-center px-4 py-3 text-xl font-semibold hover:bg-zinc-800 rounded-t-xl transition-colors";
+      header.innerHTML = `
+        <span>${secao.categoria}</span>
+        <svg id="icon-${index}" xmlns="http://www.w3.org/2000/svg" 
+             class="h-5 w-5 transition-transform" fill="none" 
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      `;
+
+      // Lista de PDFs inicialmente oculta
+      const lista = document.createElement("ul");
+      lista.id = "lista-" + index;
+      lista.className = "space-y-2 px-4 py-3 hidden";
+
+      secao.livros.forEach(livro => {
+        const item = document.createElement("li");
+        const link = document.createElement("button");
+        link.className = "pdf-link text-lg hover:underline transition-colors";
+        link.textContent = livro.titulo;
+        link.onclick = () => {
+          viewer.src = livro.arquivo;
+          viewerContainer.classList.remove("hidden");
+          window.scrollTo({ top: viewerContainer.offsetTop - 20, behavior: 'smooth' });
+        };
+        item.appendChild(link);
+        lista.appendChild(item);
+      });
+
+      // Ao clicar na categoria → alterna visibilidade da lista
+      header.onclick = () => {
+        const ul = document.getElementById("lista-" + index);
+        const icon = document.getElementById("icon-" + index);
+        ul.classList.toggle("hidden");
+        icon.classList.toggle("rotate-90");
+      };
+
+      bloco.appendChild(header);
+      bloco.appendChild(lista);
+      container.appendChild(bloco);
+    });
+  </script>
+
+</body>
+</html>
