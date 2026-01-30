@@ -1,0 +1,17 @@
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\bin\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.exe
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\bin\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.deps.json
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\bin\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.runtimeconfig.json
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\bin\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.dll
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\bin\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.pdb
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.csproj.AssemblyReference.cache
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\Cruzeiro_Atualizar_Lista_de_PDFs.Form1.resources
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.csproj.GenerateResource.cache
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.AssemblyInfoInputs.cache
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.AssemblyInfo.cs
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.csproj.CoreCompileInputs.cache
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.dll
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\refint\Cruzeiro Atualizar Lista de PDFs.dll
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.pdb
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\Cruzeiro Atualizar Lista de PDFs.genruntimeconfig.cache
+C:\Users\eduar\Desktop\Cruzeiro Atualizar Lista de PDFs\Cruzeiro Atualizar Lista de PDFs\obj\Debug\net7.0-windows\ref\Cruzeiro Atualizar Lista de PDFs.dll
