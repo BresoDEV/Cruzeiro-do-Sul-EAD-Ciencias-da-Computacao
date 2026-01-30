@@ -1,259 +1,491 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <title>Acervo de PDFs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0f0f0f; }
+    .pdf-link:hover { color: #38bdf8; }
+    .rotate-90 { transform: rotate(90deg); }
+  </style>
 </head>
-<style>
-    *{
-        cursor: pointer;
-        background-color: #333;
-    }
-    iframe{
-        width: 100%;
-        height: 500px;
-    }
-    details,summary,ul,li{
-        background-color: #666;
-        
-        color: aliceblue;
-    }
-    li{
-        margin-left: 10px;
-        
-    }
-    details{
-        padding: 6px;
-        
-    }
-    summary{
-        color: yellow;
-    }
-</style>
-<body>
+<body class="text-white min-h-screen flex flex-col items-center p-6">
+
+  <h1 class="text-3xl font-bold mb-6">📚 Acervo de PDFs</h1>
+
+  <div id="acervo" class="w-full max-w-3xl space-y-4"></div>
+
+  <div id="viewer-container" class="w-full max-w-4xl mt-8 hidden">
+    <h2 class="text-xl font-semibold mb-2">Visualizando:</h2>
+    <iframe id="pdf-viewer" class="w-full h-[600px] border rounded-xl" style="background:#1a1a1a;"></iframe>
+  </div>
+
+  <script>
+    // --- Dados do acervo ---
     
-        <details>
-            <summary>Aplicações Para Internet</summary>
-            <ul>
-                <li id="Semestre 1/Aplicações Para Internet/Unidade 1 - Conceitos Básicos do HTML">Unidade 1 - Conceitos Básicos do HTML</li>
-                <li id="Semestre 1/Aplicações Para Internet/Unidade 2 - Introdução HTML5 e Principais Tags de Estrutura">Unidade 2 - Introdução HTML5 e Principais Tags de Estrutura</li>
-                <li id="Semestre 1/Aplicações Para Internet/Unidade 3 - Formulários e Vídeos">Unidade 3 - Formulários e Vídeos</li>
-                <li id="Semestre 1/Aplicações Para Internet/Unidade 4 - Aplicando Estilo à Estrutura do Documento">Unidade 4 - Aplicando Estilo à Estrutura do Documento</li>
-                <li id="Semestre 1/Aplicações Para Internet/Unidade 5 - Layouts">Unidade 5 - Layouts</li>
-                <li id="Semestre 1/Aplicações Para Internet/Unidade 6 -  Introdução CMS">Unidade 6 -  Introdução CMS</li>
-            </ul>
-        </details>
-        
+    const acervo = [
+  {
+    categoria: "Aplicações Para Internet",
+    livros: [
+      { titulo: "Conceitos Básicos do HTML", arquivo: "Semestre 1/Aplicações Para Internet/Unidade 1 - Conceitos Básicos do HTML.pdf" },
+      { titulo: "Introdução HTML5 e Principais Tags de Estrutura", arquivo: "Semestre 1/Aplicações Para Internet/Unidade 2 - Introdução HTML5 e Principais Tags de Estrutura.pdf" },
+      { titulo: "Formulários e Vídeos", arquivo: "Semestre 1/Aplicações Para Internet/Unidade 3 - Formulários e Vídeos.pdf" },
+      { titulo: "Aplicando Estilo à Estrutura do Documento", arquivo: "Semestre 1/Aplicações Para Internet/Unidade 4 - Aplicando Estilo à Estrutura do Documento.pdf" },
+      { titulo: "Layouts", arquivo: "Semestre 1/Aplicações Para Internet/Unidade 5 - Layouts.pdf" },
+      { titulo: " Introdução CMS", arquivo: "Semestre 1/Aplicações Para Internet/Unidade 6 -  Introdução CMS.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Organização e Arquitetura de Computadores",
+    livros: [
+      { titulo: "Tópicos de Arquitetura de computadores", arquivo: "Semestre 1/Organização e Arquitetura de Computadores/Unidade 1 - Tópicos de Arquitetura de computadores.pdf" },
+      { titulo: "Sistemas de Numeração", arquivo: "Semestre 1/Organização e Arquitetura de Computadores/Unidade 2 - Sistemas de Numeração.pdf" },
+      { titulo: "Função Processamento", arquivo: "Semestre 1/Organização e Arquitetura de Computadores/Unidade 3 - Função Processamento.pdf" },
+      { titulo: "Unidade de Controle e Clock", arquivo: "Semestre 1/Organização e Arquitetura de Computadores/Unidade 4 - Unidade de Controle e Clock.pdf" },
+      { titulo: "Memória e Dispositivos de E-S", arquivo: "Semestre 1/Organização e Arquitetura de Computadores/Unidade 5 - Memória e Dispositivos de E-S.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Pensamento Computacional",
+    livros: [
+      { titulo: " Conceitos Iniciais", arquivo: "Semestre 1/Pensamento Computacional/Unidade 1 -  Conceitos Iniciais.pdf" },
+      { titulo: "Abstração", arquivo: "Semestre 1/Pensamento Computacional/Unidade 2 - Abstração.pdf" },
+      { titulo: "Reconhecimento de Padrões", arquivo: "Semestre 1/Pensamento Computacional/Unidade 3 - Reconhecimento de Padrões.pdf" },
+      { titulo: "Decomposição de Problemas e Algoritmos e Procedimentos", arquivo: "Semestre 1/Pensamento Computacional/Unidade 4 - Decomposição de Problemas e Algoritmos e Procedimentos.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Probabilidade e Estatística",
+    livros: [
+      { titulo: "Conceitos Fundamentais de Estatística", arquivo: "Semestre 1/Probabilidade e Estatística/Unidade 1 - Conceitos Fundamentais de Estatística.pdf" },
+      { titulo: "Tabelas e Gráficos", arquivo: "Semestre 1/Probabilidade e Estatística/Unidade 2 - Tabelas e Gráficos.pdf" },
+      { titulo: "Medidas de Posição", arquivo: "Semestre 1/Probabilidade e Estatística/Unidade 3 - Medidas de Posição.pdf" },
+      { titulo: "Medidas de Dispersão ou Variação", arquivo: "Semestre 1/Probabilidade e Estatística/Unidade 4 - Medidas de Dispersão ou Variação.pdf" },
+      { titulo: "Introdução à Teoria das Probabilidades", arquivo: "Semestre 1/Probabilidade e Estatística/Unidade 5 - Introdução à Teoria das Probabilidades.pdf" },
+      { titulo: "Projeto de Pesquisa de Opinião", arquivo: "Semestre 1/Probabilidade e Estatística/Unidade 6 - Projeto de Pesquisa de Opinião.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Programação de Computadores",
+    livros: [
+      { titulo: "Introdução à Linguagem Python", arquivo: "Semestre 1/Programação de Computadores/Unidade 1 - Introdução à Linguagem Python.pdf" },
+      { titulo: "Operadores e Estruturas de Decisão", arquivo: "Semestre 1/Programação de Computadores/Unidade 2 - Operadores e Estruturas de Decisão.pdf" },
+      { titulo: "Estruturas de Repetição", arquivo: "Semestre 1/Programação de Computadores/Unidade 3 - Estruturas de Repetição.pdf" },
+      { titulo: "Estruturas de Dados", arquivo: "Semestre 1/Programação de Computadores/Unidade 4 - Estruturas de Dados.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Circuitos Lógicos",
+    livros: [
+      { titulo: "Circuitos Lógicos", arquivo: "Semestre 2/Circuitos Lógicos/Unidade 1 - Circuitos Lógicos.pdf" },
+      { titulo: "Aritmética Binária", arquivo: "Semestre 2/Circuitos Lógicos/Unidade 2 - Aritmética Binária.pdf" },
+      { titulo: "Circuitos Combinacionais", arquivo: "Semestre 2/Circuitos Lógicos/Unidade 3 - Circuitos Combinacionais.pdf" },
+      { titulo: "Unidade Lógica e Aritmética", arquivo: "Semestre 2/Circuitos Lógicos/Unidade 4 - Unidade Lógica e Aritmética.pdf" },
+      { titulo: "Operações de Circuitos Digitais", arquivo: "Semestre 2/Circuitos Lógicos/Unidade 5 - Operações de Circuitos Digitais.pdf" },
+      { titulo: "Linguagem de Descrição de Hardware", arquivo: "Semestre 2/Circuitos Lógicos/Unidade 6 - Linguagem de Descrição de Hardware.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Matemática Aplicada",
+    livros: [
+      { titulo: "Conjuntos e Intervalos Reais", arquivo: "Semestre 2/Matemática Aplicada/Unidade 1 - Conjuntos e Intervalos Reais.pdf" },
+      { titulo: "Conjuntos Numéricos e Operações", arquivo: "Semestre 2/Matemática Aplicada/Unidade 2 - Conjuntos Numéricos e Operações.pdf" },
+      { titulo: "Relações e Funções", arquivo: "Semestre 2/Matemática Aplicada/Unidade 3 - Relações e Funções.pdf" },
+      { titulo: "Função Afim", arquivo: "Semestre 2/Matemática Aplicada/Unidade 4 - Função Afim.pdf" },
+      { titulo: "Função Quadrática", arquivo: "Semestre 2/Matemática Aplicada/Unidade 5 - Função Quadrática.pdf" },
+      { titulo: "Matrizes e Sistemas Lineares", arquivo: "Semestre 2/Matemática Aplicada/Unidade 6 - Matrizes e Sistemas Lineares.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Modelagem de Dados",
+    livros: [
+      { titulo: "Banco de Dados", arquivo: "Semestre 2/Modelagem de Dados/Unidade 1 - Banco de Dados.pdf" },
+      { titulo: "Etapas de um Projeto de Banco de Dados", arquivo: "Semestre 2/Modelagem de Dados/Unidade 2 - Etapas de um Projeto de Banco de Dados.pdf" },
+      { titulo: "Modelo ER - Parte 1", arquivo: "Semestre 2/Modelagem de Dados/Unidade 3 - Modelo ER - Parte 1.pdf" },
+      { titulo: "Modelo ER - Parte 2", arquivo: "Semestre 2/Modelagem de Dados/Unidade 4 - Modelo ER - Parte 2.pdf" },
+      { titulo: "Implementando o Modelo Relacional", arquivo: "Semestre 2/Modelagem de Dados/Unidade 5 - Implementando o Modelo Relacional.pdf" },
+      { titulo: "Ferramenta para Modelagem ER", arquivo: "Semestre 2/Modelagem de Dados/Unidade 6 - Ferramenta para Modelagem ER.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Programação Orientada a Objetos",
+    livros: [
+      { titulo: "Introdução a Programação Orientada a Objetos", arquivo: "Semestre 2/Programação Orientada a Objetos/Unidade 1 - Introdução a Programação Orientada a Objetos.pdf" },
+      { titulo: "Classes x Objetos", arquivo: "Semestre 2/Programação Orientada a Objetos/Unidade 2 - Classes x Objetos.pdf" },
+      { titulo: "Métodos + Estruturas de Decisão e Repetição", arquivo: "Semestre 2/Programação Orientada a Objetos/Unidade 3 - Métodos + Estruturas de Decisão e Repetição.pdf" },
+      { titulo: "Introdução a Vetores", arquivo: "Semestre 2/Programação Orientada a Objetos/Unidade 4 - Introdução a Vetores.pdf" },
+      { titulo: "Construtores, Sobrecarga e Herança", arquivo: "Semestre 2/Programação Orientada a Objetos/Unidade 5 - Construtores, Sobrecarga e Herança.pdf" },
+      { titulo: "Classes Abstratas, Polimorfismo,", arquivo: "Semestre 2/Programação Orientada a Objetos/Unidade 6 - Classes Abstratas, Polimorfismo,.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Programação Web",
+    livros: [
+      { titulo: "Conceitos do HTML", arquivo: "Semestre 2/Programação Web/Unidade 1 - Conceitos do HTML.pdf" },
+      { titulo: "Fundamentos de CSS", arquivo: "Semestre 2/Programação Web/Unidade 2 - Fundamentos de CSS.pdf" },
+      { titulo: "JavaScript", arquivo: "Semestre 2/Programação Web/Unidade 3 - JavaScript.pdf" },
+      { titulo: "jQuery, Persistência e Requisições", arquivo: "Semestre 2/Programação Web/Unidade 4 - jQuery, Persistência e Requisições.pdf" },
+      { titulo: "Introdução ao Vue.js", arquivo: "Semestre 2/Programação Web/Unidade 5 - Introdução ao Vue.js.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Técnica de Desenvolvimento e Algoritmos",
+    livros: [
+      { titulo: "Conceito de Lógica aplicada a Programas", arquivo: "Semestre 2/Técnica de Desenvolvimento e Algoritmos/Unidade 1 - Conceito de Lógica aplicada a Programas.pdf" },
+      { titulo: "Estrutura Geral de um Algoritmo", arquivo: "Semestre 2/Técnica de Desenvolvimento e Algoritmos/Unidade 2 - Estrutura Geral de um Algoritmo.pdf" },
+      { titulo: "Estruturas de Decisão", arquivo: "Semestre 2/Técnica de Desenvolvimento e Algoritmos/Unidade 3 - Estruturas de Decisão.pdf" },
+      { titulo: "Estruturas de Repetição", arquivo: "Semestre 2/Técnica de Desenvolvimento e Algoritmos/Unidade 4 - Estruturas de Repetição.pdf" },
+      { titulo: "Sub-rotinas", arquivo: "Semestre 2/Técnica de Desenvolvimento e Algoritmos/Unidade 5 - Sub-rotinas.pdf" },
+      { titulo: "Vetores e Matrizes", arquivo: "Semestre 2/Técnica de Desenvolvimento e Algoritmos/Unidade 6 - Vetores e Matrizes.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Banco de Dados",
+    livros: [
+      { titulo: "Dados Subquerys e Funções de Decisões", arquivo: "Semestre 3/Banco de Dados/Dados Unidade 3 - Subquerys e Funções de Decisões.pdf" },
+      { titulo: "Modulo 1 - Organização de Dados", arquivo: "Semestre 3/Banco de Dados/Modulo 1 - Organização de Dados.pdf" },
+      { titulo: "Instruções de comando DML", arquivo: "Semestre 3/Banco de Dados/Unidade 2 - Instruções de comando DML.pdf" },
+      { titulo: "Cláusula GROUP BY e HAVING", arquivo: "Semestre 3/Banco de Dados/Unidade 4 - Cláusula GROUP BY e HAVING.pdf" },
+      { titulo: "Cursores e procedures", arquivo: "Semestre 3/Banco de Dados/Unidade 5 - Cursores e procedures.pdf" },
+      { titulo: "Procedures, Functions, Exceptions e Triggers", arquivo: "Semestre 3/Banco de Dados/Unidade 6 - Procedures, Functions, Exceptions e Triggers.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Cálculo Diferencial e Integral I",
+    livros: [
+      { titulo: "O estudo das Funções", arquivo: "Semestre 3/Cálculo Diferencial e Integral I/Unidade 1 - O estudo das Funções.pdf" },
+      { titulo: "Limites", arquivo: "Semestre 3/Cálculo Diferencial e Integral I/Unidade 2 - Limites.pdf" },
+      { titulo: "Derivadas", arquivo: "Semestre 3/Cálculo Diferencial e Integral I/Unidade 3 - Derivadas.pdf" },
+      { titulo: "Integrais", arquivo: "Semestre 3/Cálculo Diferencial e Integral I/Unidade 4 - Integrais.pdf" },
+      { titulo: "Aplicações de Cálculo", arquivo: "Semestre 3/Cálculo Diferencial e Integral I/Unidade 5 - Aplicações de Cálculo.pdf" },
+      { titulo: "Derivadas Parciais e Integrais Duplas", arquivo: "Semestre 3/Cálculo Diferencial e Integral I/Unidade 6 - Derivadas Parciais e Integrais Duplas.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Engenharia de Requisitos e Processos de Software",
+    livros: [
+      { titulo: "Fundamentos de Engenharia de Requisitos", arquivo: "Semestre 3/Engenharia de Requisitos e Processos de Software/Unidade 1 - Fundamentos de Engenharia de Requisitos.pdf" },
+      { titulo: "Técnicas e Ferramentas da Engenharia de Requisitos", arquivo: "Semestre 3/Engenharia de Requisitos e Processos de Software/Unidade 2 - Técnicas e Ferramentas da Engenharia de Requisitos.pdf" },
+      { titulo: "Ferramentas e Exemplos de Engenharia de Requisitos", arquivo: "Semestre 3/Engenharia de Requisitos e Processos de Software/Unidade 3 - Ferramentas e Exemplos de Engenharia de Requisitos.pdf" },
+      { titulo: "Introdução ao Processo de Software", arquivo: "Semestre 3/Engenharia de Requisitos e Processos de Software/Unidade 4 - Introdução ao Processo de Software.pdf" },
+      { titulo: "Engenharia de Requisitos e Processos de Software", arquivo: "Semestre 3/Engenharia de Requisitos e Processos de Software/Unidade 5 - Engenharia de Requisitos e Processos de Software.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Estruturas de Dados Lineares",
+    livros: [
+      { titulo: "Estruturas de Dados Estáticas", arquivo: "Semestre 3/Estruturas de Dados Lineares/Unidade 1 - Estruturas de Dados Estáticas.pdf" },
+      { titulo: "Algoritmos de Classificação e Pesquisa I", arquivo: "Semestre 3/Estruturas de Dados Lineares/Unidade 2 - Algoritmos de Classificação e Pesquisa I.pdf" },
+      { titulo: "Algoritmos de Classificação e Pesquisa II", arquivo: "Semestre 3/Estruturas de Dados Lineares/Unidade 3 - Algoritmos de Classificação e Pesquisa II.pdf" },
+      { titulo: "Estruturas de Dados Dinâmicas", arquivo: "Semestre 3/Estruturas de Dados Lineares/Unidade 4 - Estruturas de Dados Dinâmicas.pdf" },
+      { titulo: "Algoritmos de Classificação em Tempo Linear", arquivo: "Semestre 3/Estruturas de Dados Lineares/Unidade 5 - Algoritmos de Classificação em Tempo Linear.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Língua Brasileira de Sinais",
+    livros: [
+      { titulo: "Língua Brasileira de Sinais Modulo 1", arquivo: "Semestre 3/Língua Brasileira de Sinais/Língua Brasileira de Sinais Modulo 1.pdf" },
+      { titulo: "Língua Brasileira de Sinais Modulo 2", arquivo: "Semestre 3/Língua Brasileira de Sinais/Língua Brasileira de Sinais Modulo 2.pdf" },
+      { titulo: "Língua Brasileira de Sinais Modulo 3", arquivo: "Semestre 3/Língua Brasileira de Sinais/Língua Brasileira de Sinais Modulo 3.pdf" },
+      { titulo: "Língua Brasileira de Sinais Modulo 4", arquivo: "Semestre 3/Língua Brasileira de Sinais/Língua Brasileira de Sinais Modulo 4.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Projeto de Software",
+    livros: [
+      { titulo: "Conceitos Gerais", arquivo: "Semestre 3/Projeto de Software/Unidade 1 - Conceitos Gerais.pdf" },
+      { titulo: "Desenvolvimento dos Mockups", arquivo: "Semestre 3/Projeto de Software/Unidade 2 - Desenvolvimento dos Mockups.pdf" },
+      { titulo: "Diagramas da UML (Parte A)", arquivo: "Semestre 3/Projeto de Software/Unidade 3 - Diagramas da UML (Parte A).pdf" },
+      { titulo: "Diagramas da UML – Parte B", arquivo: "Semestre 3/Projeto de Software/Unidade 4 - Diagramas da UML – Parte B.pdf" },
+      { titulo: "Estudo de Caso – Projeto", arquivo: "Semestre 3/Projeto de Software/Unidade 5 - Estudo de Caso – Projeto.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Visualização da Informação",
+    livros: [
+      { titulo: "Conceitos Gerais", arquivo: "Semestre 3/Visualização da Informação/Unidade 1 - Conceitos Gerais.pdf" },
+      { titulo: "Visualização Temporal", arquivo: "Semestre 3/Visualização da Informação/Unidade 2 - Visualização Temporal.pdf" },
+      { titulo: "Visualização Hierarquica", arquivo: "Semestre 3/Visualização da Informação/Unidade 3 - Visualização Hierarquica.pdf" },
+      { titulo: "Visualização de Redes e  Grafos", arquivo: "Semestre 3/Visualização da Informação/Unidade 4 - Visualização de Redes e  Grafos.pdf" },
+      { titulo: "Visualização Geografica", arquivo: "Semestre 3/Visualização da Informação/Unidade 5 - Visualização Geografica.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Cálculo Diferencial e Integral II",
+    livros: [
+      { titulo: "Modulo 1 -  Funções de várias variáveis", arquivo: "Semestre 4/Cálculo Diferencial e Integral II/Modulo 1 -  Funções de várias variáveis.pdf" },
+      { titulo: "Modulo 2 - Derivadas Parciais", arquivo: "Semestre 4/Cálculo Diferencial e Integral II/Modulo 2 - Derivadas Parciais.pdf" },
+      { titulo: "Modulo 3 -  Coordenadas Polares", arquivo: "Semestre 4/Cálculo Diferencial e Integral II/Modulo 3 -  Coordenadas Polares.pdf" },
+      { titulo: "Modulo 4 -  Integrais duplas na forma polar", arquivo: "Semestre 4/Cálculo Diferencial e Integral II/Modulo 4 -  Integrais duplas na forma polar.pdf" },
+      { titulo: "Modulo 5 -  Integrais triplas", arquivo: "Semestre 4/Cálculo Diferencial e Integral II/Modulo 5 -  Integrais triplas.pdf" },
+      { titulo: "Modulo 6 - Equações Diferenciais", arquivo: "Semestre 4/Cálculo Diferencial e Integral II/Modulo 6 - Equações Diferenciais.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Estruturas de Dados Não-Lineares",
+    livros: [
+      { titulo: "Modul 4 - Tabelas de Espalhamento", arquivo: "Semestre 4/Estruturas de Dados Não-Lineares/Modul 4 - Tabelas de Espalhamento.pdf" },
+      { titulo: "Modulo 1 - Revisão de Estruturas Lineares", arquivo: "Semestre 4/Estruturas de Dados Não-Lineares/Modulo 1 - Revisão de Estruturas Lineares.pdf" },
+      { titulo: "Modulo 2 - Árvores", arquivo: "Semestre 4/Estruturas de Dados Não-Lineares/Modulo 2 - Árvores.pdf" },
+      { titulo: "Modulo 3 - Árvores de Busca Binária", arquivo: "Semestre 4/Estruturas de Dados Não-Lineares/Modulo 3 - Árvores de Busca Binária.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Matemática Discreta",
+    livros: [
+      { titulo: "Modulo 1 -  Teoria dos Conjuntos", arquivo: "Semestre 4/Matemática Discreta/Modulo 1 -  Teoria dos Conjuntos.pdf" },
+      { titulo: "Modulo 2 - Relações", arquivo: "Semestre 4/Matemática Discreta/Modulo 2 - Relações.pdf" },
+      { titulo: "Modulo 3 - Funções e Análise Combinatória", arquivo: "Semestre 4/Matemática Discreta/Modulo 3 - Funções e Análise Combinatória.pdf" },
+      { titulo: "Modulo 4 - Indução e Provas Matemáticas", arquivo: "Semestre 4/Matemática Discreta/Modulo 4 - Indução e Provas Matemáticas.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Tópicos Especiais em Robótica",
+    livros: [
+      { titulo: "Modulo 1 -  Histórico e Introdução", arquivo: "Semestre 4/Tópicos Especiais em Robótica/Modulo 1 -  Histórico e Introdução.pdf" },
+      { titulo: "Modulo 2 - Cinemática de Robôs", arquivo: "Semestre 4/Tópicos Especiais em Robótica/Modulo 2 - Cinemática de Robôs.pdf" },
+      { titulo: "Modulo 3 - Modelagem Dinâmica", arquivo: "Semestre 4/Tópicos Especiais em Robótica/Modulo 3 - Modelagem Dinâmica.pdf" },
+      { titulo: "Modulo 4 - Controle e Programação de Robôs", arquivo: "Semestre 4/Tópicos Especiais em Robótica/Modulo 4 - Controle e Programação de Robôs.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Computabilidade e Complexidade de Algoritmos",
+    livros: [
+      { titulo: "Introdução a Computabilidade e Complexidade de Algoritmos", arquivo: "Semestre 5/Computabilidade e Complexidade de Algoritmos/Unidade 1 - Introdução a Computabilidade e Complexidade de Algoritmos.pdf" },
+      { titulo: "Complexidade de Algoritmos", arquivo: "Semestre 5/Computabilidade e Complexidade de Algoritmos/Unidade 2 - Complexidade de Algoritmos.pdf" },
+      { titulo: "UNidade 3 - Análise de Desempenho de Algoritmos", arquivo: "Semestre 5/Computabilidade e Complexidade de Algoritmos/UNidade 3 - Análise de Desempenho de Algoritmos.pdf" },
+      { titulo: "UNidade 4 - Técnicas de Projeto de Algoritmos", arquivo: "Semestre 5/Computabilidade e Complexidade de Algoritmos/UNidade 4 - Técnicas de Projeto de Algoritmos.pdf" },
+      { titulo: "Problemas NP-Completos", arquivo: "Semestre 5/Computabilidade e Complexidade de Algoritmos/Unidade 5 - Problemas NP-Completos.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Inteligência Artificial",
+    livros: [
+      { titulo: "Introdução à Inteligência Artificial", arquivo: "Semestre 5/Inteligência Artificial/Unidade 1 - Introdução à Inteligência Artificial.pdf" },
+      { titulo: "Resolução de Problemas por Meio de Buscas", arquivo: "Semestre 5/Inteligência Artificial/Unidade 2 - Resolução de Problemas por Meio de Buscas.pdf" },
+      { titulo: "Aprendizagem de Máquina", arquivo: "Semestre 5/Inteligência Artificial/Unidade 3 - Aprendizagem de Máquina.pdf" },
+      { titulo: "Representação e Processamento do Conhecimento", arquivo: "Semestre 5/Inteligência Artificial/Unidade 4 - Representação e Processamento do Conhecimento.pdf" },
+      { titulo: "Linguagens de Programação e a IA", arquivo: "Semestre 5/Inteligência Artificial/Unidade 5 - Linguagens de Programação e a IA.pdf" },
+      { titulo: "Inteligência Artificial", arquivo: "Semestre 5/Inteligência Artificial/Unidade 6 - Inteligência Artificial.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Paradigmas de Programação",
+    livros: [
+      { titulo: "Introdução à Engenharia de Software", arquivo: "Semestre 5/Paradigmas de Programação/Unidade 1 - Introdução à Engenharia de Software.pdf" },
+      { titulo: "Modelagem de Sistemas", arquivo: "Semestre 5/Paradigmas de Programação/Unidade 2 - Modelagem de Sistemas.pdf" },
+      { titulo: "Programação Estruturada", arquivo: "Semestre 5/Paradigmas de Programação/Unidade 3 - Programação Estruturada.pdf" },
+      { titulo: "Programação Orientada a Objetos", arquivo: "Semestre 5/Paradigmas de Programação/Unidade 4 - Programação Orientada a Objetos.pdf" },
+      { titulo: "Comunicação de Dados", arquivo: "Semestre 5/Paradigmas de Programação/Unidade 5 - Comunicação de Dados.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Processamento de Imagens",
+    livros: [
+      { titulo: "Fundamentos de Imagens e Espaços de Cores", arquivo: "Semestre 5/Processamento de Imagens/Unidade 1 - Fundamentos de Imagens e Espaços de Cores.pdf" },
+      { titulo: "Transformações e Filtragens de Imagens", arquivo: "Semestre 5/Processamento de Imagens/Unidade 2 - Transformações e Filtragens de Imagens.pdf" },
+      { titulo: "Restauração, Reconstrução e Morfologia em Imagens", arquivo: "Semestre 5/Processamento de Imagens/Unidade 3 - Restauração, Reconstrução e Morfologia em Imagens.pdf" },
+      { titulo: "Relacionando o Processamento de Imagens com Vídeo e Compressão", arquivo: "Semestre 5/Processamento de Imagens/Unidade 4 - Relacionando o Processamento de Imagens com Vídeo e Compressão.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Redes de Computadores",
+    livros: [
+      { titulo: "Redes de Computadores", arquivo: "Semestre 5/Redes de Computadores/Unidade 1 - Redes de Computadores.pdf" },
+      { titulo: "Topologias", arquivo: "Semestre 5/Redes de Computadores/Unidade 2 - Topologias.pdf" },
+      { titulo: "Protocolos TCP-IP e  Endereçamento de Redes", arquivo: "Semestre 5/Redes de Computadores/Unidade 3 - Protocolos TCP-IP e  Endereçamento de Redes.pdf" },
+      { titulo: "TCP-IP e Roteamento", arquivo: "Semestre 5/Redes de Computadores/Unidade 4 - TCP-IP e Roteamento.pdf" },
+      { titulo: "Cálculo de Sub-Rede", arquivo: "Semestre 5/Redes de Computadores/Unidade 5 - Cálculo de Sub-Rede.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Sistemas Operacionais",
+    livros: [
+      { titulo: "Introdução a Sistemas Operacionais", arquivo: "Semestre 5/Sistemas Operacionais/Unidade 1 - Introdução a Sistemas Operacionais.pdf" },
+      { titulo: "Gerenciamento de Processos", arquivo: "Semestre 5/Sistemas Operacionais/Unidade 2 - Gerenciamento de Processos.pdf" },
+      { titulo: "Gerenciamento de Memória", arquivo: "Semestre 5/Sistemas Operacionais/Unidade 3 - Gerenciamento de Memória.pdf" },
+      { titulo: "Gerenciador de Arquivos", arquivo: "Semestre 5/Sistemas Operacionais/Unidade 4 - Gerenciador de Arquivos.pdf" },
+      { titulo: "Gerenciador de Entrada e Saída", arquivo: "Semestre 5/Sistemas Operacionais/Unidade 5 - Gerenciador de Entrada e Saída.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Computação Gráfica",
+    livros: [
+      { titulo: "Conceitos Fundamentais", arquivo: "Semestre 6/Computação Gráfica/Unidade 1 - Conceitos Fundamentais.pdf" },
+      { titulo: "Transformações Geométricas", arquivo: "Semestre 6/Computação Gráfica/Unidade 2 - Transformações Geométricas.pdf" },
+      { titulo: "Modelagem 3D", arquivo: "Semestre 6/Computação Gráfica/Unidade 3 - Modelagem 3D.pdf" },
+      { titulo: "Rendering e Iluminação", arquivo: "Semestre 6/Computação Gráfica/Unidade 4 - Rendering e Iluminação.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Desenvolvimento Ágil",
+    livros: [
+      { titulo: "Revisão Ágil", arquivo: "Semestre 6/Desenvolvimento Ágil/Unidade 1 - Revisão Ágil.pdf" },
+      { titulo: "Planejamento Ágil", arquivo: "Semestre 6/Desenvolvimento Ágil/Unidade 2 - Planejamento Ágil.pdf" },
+      { titulo: "Design Ágil", arquivo: "Semestre 6/Desenvolvimento Ágil/Unidade 3 - Design Ágil.pdf" },
+      { titulo: "Execução Ágil", arquivo: "Semestre 6/Desenvolvimento Ágil/Unidade 4 - Execução Ágil.pdf" },
+      { titulo: "Controle Ágil", arquivo: "Semestre 6/Desenvolvimento Ágil/Unidade 5 - Controle Ágil.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Linguagens Formais e Autômatos",
+    livros: [
+      { titulo: "Conceitos Básicos", arquivo: "Semestre 6/Linguagens Formais e Autômatos/Unidade 1 - Conceitos Básicos.pdf" },
+      { titulo: "Linguagens Regulares - Autômatos", arquivo: "Semestre 6/Linguagens Formais e Autômatos/Unidade 2 - Linguagens Regulares - Autômatos.pdf" },
+      { titulo: "Linguagens Regulares – Expressão Regular", arquivo: "Semestre 6/Linguagens Formais e Autômatos/Unidade 3 - Linguagens Regulares – Expressão Regular.pdf" },
+      { titulo: "Linguagens Livres de Contexto", arquivo: "Semestre 6/Linguagens Formais e Autômatos/Unidade 4 - Linguagens Livres de Contexto.pdf" },
+      { titulo: "Linguagens Sensíveis ao Contexto", arquivo: "Semestre 6/Linguagens Formais e Autômatos/Unidade 5 - Linguagens Sensíveis ao Contexto.pdf" },
+      { titulo: "Hierarquia de Classe Linguagens e Tese de Church", arquivo: "Semestre 6/Linguagens Formais e Autômatos/Unidade 6 - Hierarquia de Classe Linguagens e Tese de Church.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Programação Para Dispositivos Móveis",
+    livros: [
+      { titulo: "Introdução ao desenvolvimento para Android", arquivo: "Semestre 6/Programação Para Dispositivos Móveis/Unidade 1 - Introdução ao desenvolvimento para Android.pdf" },
+      { titulo: "View, eventos, activity e intent", arquivo: "Semestre 6/Programação Para Dispositivos Móveis/Unidade 2 - View, eventos, activity e intent.pdf" },
+      { titulo: "Menus e Banco de Dados", arquivo: "Semestre 6/Programação Para Dispositivos Móveis/Unidade 3 - Menus e Banco de Dados.pdf" },
+      { titulo: "Utilização dos recursos- Ligação, SMS, navegação web,", arquivo: "Semestre 6/Programação Para Dispositivos Móveis/Unidade 4 - Utilização dos recursos- Ligação, SMS, navegação web,.pdf" },
+      { titulo: "Consumindo JSON em aplicações Android", arquivo: "Semestre 6/Programação Para Dispositivos Móveis/Unidade 5 - Consumindo JSON em aplicações Android.pdf" },
+      { titulo: "Internacionalização", arquivo: "Semestre 6/Programação Para Dispositivos Móveis/Unidade 6 - Internacionalização.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Sistemas Cliente Servidor",
+    livros: [
+      { titulo: "Introdução Html + Java Server Page", arquivo: "Semestre 6/Sistemas Cliente Servidor/Unidade 1 - Introdução Html + Java Server Page.pdf" },
+      { titulo: "Unidade 2 -Introdução JavaServer Pages Standard Tag Library", arquivo: "Semestre 6/Sistemas Cliente Servidor/Unidade 2 -Introdução JavaServer Pages Standard Tag Library.pdf" },
+      { titulo: "Introdução ao Servlet e Padrão MVC", arquivo: "Semestre 6/Sistemas Cliente Servidor/Unidade 3 - Introdução ao Servlet e Padrão MVC.pdf" },
+      { titulo: "Introdução a Aplicações Web Utilizando Banco", arquivo: "Semestre 6/Sistemas Cliente Servidor/Unidade 4 - Introdução a Aplicações Web Utilizando Banco.pdf" },
+      { titulo: "Introdução ao Spring e Spring MVC Forms", arquivo: "Semestre 6/Sistemas Cliente Servidor/Unidade 5 - Introdução ao Spring e Spring MVC Forms.pdf" },
+      { titulo: "Introdução ao Hibernate", arquivo: "Semestre 6/Sistemas Cliente Servidor/Unidade 6 - Introdução ao Hibernate.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Teoria dos Grafos",
+    livros: [
+      { titulo: "Conceitos Básicos e Aplicações de Grafos", arquivo: "Semestre 6/Teoria dos Grafos/Unidade 1 - Conceitos Básicos e Aplicações de Grafos.pdf" },
+      { titulo: "Conceitos e Propriedades de Grafos", arquivo: "Semestre 6/Teoria dos Grafos/Unidade 2 - Conceitos e Propriedades de Grafos.pdf" },
+      { titulo: "Planaridade e Conectividade", arquivo: "Semestre 6/Teoria dos Grafos/Unidade 3 - Planaridade e Conectividade.pdf" },
+      { titulo: "Algoritmos de Busca em Grafos", arquivo: "Semestre 6/Teoria dos Grafos/Unidade 4 - Algoritmos de Busca em Grafos.pdf" },
+      { titulo: "Caminhos em Grafos", arquivo: "Semestre 6/Teoria dos Grafos/Unidade 5 - Caminhos em Grafos.pdf" },
+      { titulo: " Árvores e Ordenação Topológica", arquivo: "Semestre 6/Teoria dos Grafos/Unidade 6 -  Árvores e Ordenação Topológica.pdf" }
+    ]
+  }
+,
+  {
+    categoria: "Compiladores e Interpretadores",
+    livros: [
+    ]
+  }
+,
+  {
+    categoria: "Computação em Nuvem",
+    livros: [
+    ]
+  }
+,
+  {
+    categoria: "Computação Paralela e Distribuída",
+    livros: [
+    ]
+  }
+,
+  {
+    categoria: "Interface Humano-Computador",
+    livros: [
+    ]
+  }
+]
 
-        <details>
-            <summary>Organização e Arquitetura de Computadores</summary>
-            <ul>
-                <li id="Semestre 1/Organização e Arquitetura de Computadores/Unidade 1 - Tópicos de Arquitetura de computadores">Unidade 1 - Tópicos de Arquitetura de computadores</li>
-                <li id="Semestre 1/Organização e Arquitetura de Computadores/Unidade 2 - Sistemas de Numeração">Unidade 2 - Sistemas de Numeração</li>
-                <li id="Semestre 1/Organização e Arquitetura de Computadores/Unidade 3 - Função Processamento">Unidade 3 - Função Processamento</li>
-                <li id="Semestre 1/Organização e Arquitetura de Computadores/Unidade 4 - Unidade de Controle e Clock">Unidade 4 - Unidade de Controle e Clock</li>
-                <li id="Semestre 1/Organização e Arquitetura de Computadores/Unidade 5 - Memória e Dispositivos de E-S">Unidade 5 - Memória e Dispositivos de E-S</li>
-            </ul>
-        </details>
 
 
-        <details>
-            <summary>Pensamento Computacional</summary>
-            <ul>
-                <li id="Semestre 1/Pensamento Computacional/Unidade 1 -  Conceitos Iniciais">Unidade 1 -  Conceitos Iniciais</li>
-                <li id="Semestre 1/Pensamento Computacional/Unidade 2 - Abstração">Unidade 2 - Abstração</li>
-                <li id="Semestre 1/Pensamento Computacional/Unidade 3 - Reconhecimento de Padrões">Unidade 3 - Reconhecimento de Padrões</li>
-                <li id="Semestre 1/Pensamento Computacional/Unidade 4 - Decomposição de Problemas e Algoritmos e Procedimentos">Unidade 4 - Decomposição de Problemas e Algoritmos e Procedimentos</li>
-            </ul>
-        </details>
+    const container = document.getElementById("acervo");
+    const viewer = document.getElementById("pdf-viewer");
+    const viewerContainer = document.getElementById("viewer-container");
 
+    acervo.forEach((secao, index) => {
+      const bloco = document.createElement("div");
+      bloco.className = "bg-zinc-900 rounded-xl shadow-lg";
 
-        <details>
-            <summary>Probabilidade e Estatística</summary>
-            <ul>
-                <li id="Semestre 1/Probabilidade e Estatística/Unidade 1 - Conceitos Fundamentais de Estatística">Unidade 1 - Conceitos Fundamentais de Estatística</li>
-                <li id="Semestre 1/Probabilidade e Estatística/Unidade 2 - Tabelas e Gráficos">Unidade 2 - Tabelas e Gráficos</li>
-                <li id="Semestre 1/Probabilidade e Estatística/Unidade 3 - Medidas de Posição">Unidade 3 - Medidas de Posição</li>
-                <li id="Semestre 1/Probabilidade e Estatística/Unidade 4 - Medidas de Dispersão ou Variação">Unidade 4 - Medidas de Dispersão ou Variação</li>
-                <li id="Semestre 1/Probabilidade e Estatística/Unidade 5 - Introdução à Teoria das Probabilidades">Unidade 5 - Introdução à Teoria das Probabilidades</li>
-                <li id="Semestre 1/Probabilidade e Estatística/Unidade 6 - Projeto de Pesquisa de Opinião">Unidade 6 - Projeto de Pesquisa de Opinião</li>
-            </ul>
-        </details>
+      // Cabeçalho da categoria (click para expandir)
+      const header = document.createElement("button");
+      header.className = 
+        "w-full flex justify-between items-center px-4 py-3 text-xl font-semibold hover:bg-zinc-800 rounded-t-xl transition-colors";
+      header.innerHTML = `
+        <span>${secao.categoria}</span>
+        <svg id="icon-${index}" xmlns="http://www.w3.org/2000/svg" 
+             class="h-5 w-5 transition-transform" fill="none" 
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      `;
 
+      // Lista de PDFs inicialmente oculta
+      const lista = document.createElement("ul");
+      lista.id = "lista-" + index;
+      lista.className = "space-y-2 px-4 py-3 hidden";
 
-        <details>
-            <summary>Programação de Computadores</summary>
-            <ul>
-                <li id="Semestre 1/Programação de Computadores/Unidade 1 - Introdução à Linguagem Python">Unidade 1 - Introdução à Linguagem Python</li>
-                <li id="Semestre 1/Programação de Computadores/Unidade 2 - Operadores e Estruturas de Decisão">Unidade 2 - Operadores e Estruturas de Decisão</li>
-                <li id="Semestre 1/Programação de Computadores/Unidade 3 - Estruturas de Repetição">Unidade 3 - Estruturas de Repetição</li>
-                <li id="Semestre 1/Programação de Computadores/Unidade 4 - Estruturas de Dados">Unidade 4 - Estruturas de Dados</li>
-            </ul>
-        </details>
+      secao.livros.forEach(livro => {
+        const item = document.createElement("li");
+        const link = document.createElement("button");
+        link.className = "pdf-link text-lg hover:underline transition-colors";
+        link.textContent = livro.titulo;
+        link.onclick = () => {
+          viewer.src = livro.arquivo;
+          viewerContainer.classList.remove("hidden");
+          window.scrollTo({ top: viewerContainer.offsetTop - 20, behavior: 'smooth' });
+        };
+        item.appendChild(link);
+        lista.appendChild(item);
+      });
 
-        <!------------------------->
+      // Ao clicar na categoria → alterna visibilidade da lista
+      header.onclick = () => {
+        const ul = document.getElementById("lista-" + index);
+        const icon = document.getElementById("icon-" + index);
+        ul.classList.toggle("hidden");
+        icon.classList.toggle("rotate-90");
+      };
 
-        <details>
-            <summary>Circuitos Lógicos</summary>
-            <ul>
-                <li id="Semestre 2/Circuitos Lógicos/Unidade 1 - Circuitos Lógicos">Unidade 1 - Circuitos Lógicos</li>
-                <li id="Semestre 2/Circuitos Lógicos/Unidade 2 - Aritmética Binária">Unidade 2 - Aritmética Binária</li>
-                <li id="Semestre 2/Circuitos Lógicos/Unidade 3 - Circuitos Combinacionais">Unidade 3 - Circuitos Combinacionais</li>
-                <li id="Semestre 2/Circuitos Lógicos/Unidade 4 - Unidade Lógica e Aritmética">Unidade 4 - Unidade Lógica e Aritmética</li>
-                <li id="Semestre 2/Circuitos Lógicos/Unidade 5 - Operações de Circuitos Digitais">Unidade 5 - Operações de Circuitos Digitais</li>
-                <li id="Semestre 2/Circuitos Lógicos/Unidade 6 - Linguagem de Descrição de Hardware">Unidade 6 - Linguagem de Descrição de Hardware</li>
-            </ul>
-        </details>
-
-
-        <details>
-            <summary>Matemática Aplicada</summary>
-            <ul>
-                <li id="Semestre 2/Matemática Aplicada/Unidade 1 - Conjuntos e Intervalos Reais">Unidade 1 - Conjuntos e Intervalos Reais</li>
-                <li id="Semestre 2/Matemática Aplicada/Unidade 2 - Conjuntos Numéricos e Operações">Unidade 2 - Conjuntos Numéricos e Operações</li>
-                <li id="Semestre 2/Matemática Aplicada/Unidade 3 - Relações e Funções">Unidade 3 - Relações e Funções</li>
-                <li id="Semestre 2/Matemática Aplicada/Unidade 4 - Função Afim">Unidade 4 - Função Afim</li>
-                <li id="Semestre 2/Matemática Aplicada/Unidade 5 - Função Quadrática">Unidade 5 - Função Quadrática</li>
-                <li id="Semestre 2/Matemática Aplicada/Unidade 6 - Matrizes e Sistemas Lineares">Unidade 6 - Matrizes e Sistemas Lineares</li>
-            </ul>
-        </details>
-
-
-        <details>
-            <summary>Modelagem de Dados</summary>
-            <ul>
-                <li id="Semestre 2/Modelagem de Dados/Unidade 1 - Banco de Dados">Unidade 1 - Banco de Dados</li>
-                <li id="Semestre 2/Modelagem de Dados/Unidade 2 - Etapas de um Projeto de Banco de Dados">Unidade 2 - Etapas de um Projeto de Banco de Dados</li>
-                <li id="Semestre 2/Modelagem de Dados/Unidade 3 - Modelo ER - Parte 1">Unidade 3 - Modelo ER - Parte 1</li>
-                <li id="Semestre 2/Modelagem de Dados/Unidade 4 - Modelo ER - Parte 2">Unidade 4 - Modelo ER - Parte 2</li>
-                <li id="Semestre 2/Modelagem de Dados/Unidade 5 - Implementando o Modelo Relacional">Unidade 5 - Implementando o Modelo Relacional</li>
-                <li id="Semestre 2/Modelagem de Dados/Unidade 6 - Ferramenta para Modelagem ER">Unidade 6 - Ferramenta para Modelagem ER</li>
-            </ul>
-        </details>
-
-
-        <details>
-            <summary>Programação Orientada a Objetos</summary>
-            <ul>
-                <li id="Semestre 2/Programação Orientada a Objetos/Unidade 1 - Introdução a Programação Orientada a Objetos">Unidade 1 - Introdução a Programação Orientada a Objetos</li>
-                <li id="Semestre 2/Programação Orientada a Objetos/Unidade 2 - Classes x Objetos">Unidade 2 - Classes x Objetos</li>
-                <li id="Semestre 2/Programação Orientada a Objetos/Unidade 3 - Métodos + Estruturas de Decisão e Repetição">Unidade 3 - Métodos + Estruturas de Decisão e Repetição</li>
-                <li id="Semestre 2/Programação Orientada a Objetos/Unidade 4 - Introdução a Vetores">Unidade 4 - Introdução a Vetores</li>
-                <li id="Semestre 2/Programação Orientada a Objetos/Unidade 5 - Construtores, Sobrecarga e Herança">Unidade 5 - Construtores, Sobrecarga e Herança</li>
-                <li id="Semestre 2/Programação Orientada a Objetos/Unidade 6 - Classes Abstratas, Polimorfismo,">Unidade 6 - Classes Abstratas, Polimorfismo,</li>
-            </ul>
-        </details>
-
-
-        <details>
-            <summary>Programação Web</summary>
-            <ul>
-                <li id="Semestre 2/Programação Web/Unidade 1 - Conceitos do HTML">Unidade 1 - Conceitos do HTML</li>
-                <li id="Semestre 2/Programação Web/Unidade 2 - Fundamentos de CSS">Unidade 2 - Fundamentos de CSS</li>
-                <li id="Semestre 2/Programação Web/Unidade 3 - JavaScript">Unidade 3 - JavaScript</li>
-                <li id="Semestre 2/Programação Web/Unidade 4 - jQuery, Persistência e Requisições">Unidade 4 - jQuery, Persistência e Requisições</li>
-                <li id="Semestre 2/Programação Web/Unidade 5 - Introdução ao Vue.js">Unidade 5 - Introdução ao Vue.js</li>
-            </ul>
-        </details>
-
-
-        <details>
-            <summary>Técnica de Desenvolvimento e Algoritmos</summary>
-            <ul>
-                <li id="Semestre 2/Técnica de Desenvolvimento e Algoritmos/Unidade 1 - Conceito de Lógica aplicada a Programas">Unidade 1 - Conceito de Lógica aplicada a Programas</li>
-                <li id="Semestre 2/Técnica de Desenvolvimento e Algoritmos/Unidade 2 - Estrutura Geral de um Algoritmo">Unidade 2 - Estrutura Geral de um Algoritmo</li>
-                <li id="Semestre 2/Técnica de Desenvolvimento e Algoritmos/Unidade 3 - Estruturas de Decisão">Unidade 3 - Estruturas de Decisão</li>
-                <li id="Semestre 2/Técnica de Desenvolvimento e Algoritmos/Unidade 4 - Estruturas de Repetição">Unidade 4 - Estruturas de Repetição</li>
-            </ul>
-        </details>
-
-<!---------------------------------->
-        <details>
-            <summary>Banco de Dados</summary>
-            <ul>
-                <li id="Semestre 3/Banco de Dados/Modulo 1 - Organização de Dados">Modulo 1 - Organização de Dados</li>
-                <li id="Semestre 3/Banco de Dados/Unidade 2 - Instruções de comando DML">Unidade 2 - Instruções de comando DML</li>
-                <li id="Semestre 3/Banco de Dados/Dados Unidade 3 - Subquerys e Funções de Decisões">Unidade 3 - Subquerys e Funções de Decisões</li>
-                <li id="Semestre 3/Banco de Dados/Unidade 4 - Cláusula GROUP BY e HAVING">Unidade 4 - Cláusula GROUP BY e HAVING</li>
-                <li id="Semestre 3/Banco de Dados/Unidade 5 - Cursores e procedures">Unidade 5 - Cursores e procedures</li>
-            </ul>
-        </details>
-
-
-        <details>
-            <summary>Cálculo Diferencial e Integral I</summary>
-            <ul>
-                <li id="Semestre 3/Cálculo Diferencial e Integral I/Unidade 1 - O estudo das Funções">Unidade 1 - O estudo das Funções</li>
-                <li id="Semestre 3/Cálculo Diferencial e Integral I/Unidade 2 - Limites">Unidade 2 - Limites</li>
-                <li id="Semestre 3/Cálculo Diferencial e Integral I/Unidade 3 - Derivadas">Unidade 3 - Derivadas</li>
-                <li id="Semestre 3/Cálculo Diferencial e Integral I/Unidade 4 - Integrais">Unidade 4 - Integrais</li>
-                <li id="Semestre 3/Cálculo Diferencial e Integral I/Unidade 5 - Aplicações de Cálculo">Unidade 5 - Aplicações de Cálculo</li>
-                <li id="Semestre 3/Cálculo Diferencial e Integral I/Unidade 6 - Derivadas Parciais e Integrais Duplas">Unidade 6 - Derivadas Parciais e Integrais Duplas</li>
-            </ul>
-        </details>
-
-
-        <details>
-            <summary>Língua Brasileira de Sinais</summary>
-            <ul>
-                <li id="Semestre 3/Língua Brasileira de Sinais/Língua Brasileira de Sinais Modulo 1">Língua Brasileira de Sinais Modulo 1</li>
-                <li id="Semestre 3/Língua Brasileira de Sinais/Língua Brasileira de Sinais Modulo 2">Língua Brasileira de Sinais Modulo 2</li>
-                <li id="Semestre 3/Língua Brasileira de Sinais/Língua Brasileira de Sinais Modulo 3">Língua Brasileira de Sinais Modulo 3</li>
-                <li id="Semestre 3/Língua Brasileira de Sinais/Língua Brasileira de Sinais Modulo 4">Língua Brasileira de Sinais Modulo 4</li>
-            </ul>
-        </details>
-
-
-        <details>
-            <summary>Projeto de Software</summary>
-            <ul>
-                <li id="Semestre 3/Projeto de Software/Unidade 1 - Conceitos Gerais">Unidade 1 - Conceitos Gerais</li>
-                <li id="Semestre 3/Projeto de Software/Unidade 2 - Desenvolvimento dos Mockups">Unidade 2 - Desenvolvimento dos Mockups</li>
-                <li id="Semestre 3/Projeto de Software/Unidade 3 - Diagramas da UML (Parte A)">Unidade 3 - Diagramas da UML – Parte A</li>
-                <li id="Semestre 3/Projeto de Software/Unidade 4 - Diagramas da UML – Parte B">Unidade 4 - Diagramas da UML – Parte B</li>
-                <li id="Semestre 3/Projeto de Software/Unidade 5 - Estudo de Caso – Projeto">Unidade 5 - Estudo de Caso – Projeto</li>
-            </ul>
-        </details>
-
-
-       
-
-
-        <!--
-            <details>
-            <summary></summary>
-            <ul>
-                <li id="Semestre 1/"></li>
-                <li id="Semestre 1/"></li>
-                <li id="Semestre 1/"></li>
-                <li id="Semestre 1/"></li>
-                <li id="Semestre 1/"></li>
-                <li id="Semestre 1/"></li>
-            </ul>
-        </details>
-        -->
-
-
-
-
-
-
-
-        <iframe src="" id="pdf" frameborder="0"></iframe>
-    
-</body>
-<script>
-    const pdf = document.getElementById('pdf');
-
-    var li = document.querySelectorAll('li');
-
-    li.forEach(element => {
-        element.addEventListener('click',()=>{
-        pdf.src = element.id+'.pdf';
-    })
+      bloco.appendChild(header);
+      bloco.appendChild(lista);
+      container.appendChild(bloco);
     });
+  </script>
 
-</script>
+</body>
 </html>
